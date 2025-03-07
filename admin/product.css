@@ -1,0 +1,27 @@
+/* Style for 'Published' status (success, green background) */
+.status-published {
+    background-color: #28a745;  /* Green background for published */
+    color: white;  /* White text */
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 20px;
+    text-align: center;
+    display: inline-block;
+}
+
+/* Style for 'Unpublished' status (danger, red background) */
+.status-unpublished {
+    background-color: #dc3545;  /* Red background for unpublished */
+    color: white;  /* White text */
+    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 20px;
+    text-align: center;
+    display: inline-block;
+}
+
+
+/* Optional: Style for the table rows */
+table td {
+    vertical-align: middle; /* Center the content vertically */
+}
