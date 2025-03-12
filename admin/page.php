@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     unlink($existing_logo);  // Delete the old logo file
                 }
             }
-            
+
             // Move the uploaded file to the server directory
             if (move_uploaded_file($image_tmp_name, $image_path)) {
                 $logo = $image_path;
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Execute the statement
         if ($stmt->execute()) {
-            echo "<div id='success-alert' class='alert alert-success'>Settings saved successfully!</div>";
+            echo "<div id='success-alert' style='margin:0 auto;width:80%;z-index: 1000;' class='alert alert-success'>Settings saved successfully!</div>";
             echo "<script>setTimeout(function(){ $('#success-alert').fadeOut(1000); }, 2000);</script>";
         } else {
             echo "<div id='error-alert' class='alert alert-danger'>Error: " . $stmt->errorInfo()[2] . "</div>";

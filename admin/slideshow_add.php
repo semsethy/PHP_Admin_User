@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }
 
         if ($stmt->execute()) {
-            echo "<div id='success-alert' style='width:80%;' class='container alert alert-success mt-4 mb-4'>$action_message</div>";
+            echo "<div id='success-alert' style='width:80%;z-index: 1000;' class='container alert alert-success mt-4 mb-4'>$action_message</div>";
             echo "<script>setTimeout(function(){ $('#success-alert').fadeOut(1000); }, 2000);</script>";
         } else {
             echo "<div id='error-alert' class='alert alert-danger'>Error: " . $stmt->error . "</div>";

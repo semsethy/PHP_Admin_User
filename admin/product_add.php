@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST['product_id']) && $_POST['product_id'] != '') {
             $product_id = $_POST['product_id'];
             if ($product->update($product_name, $description, $price, $stock, $status, $main_image_url, $collection_image_url, $category_id, $product_id)) {
-                echo "<div id='success-alert' class='container mt-4 alert alert-success'>Product updated successfully!</div>";
+                echo "<div id='success-alert' style='margin:0 auto;width:80%;z-index: 1000;' class='container mt-4 alert alert-success'>Product updated successfully!</div>";
                 echo "<script>setTimeout(function(){ $('#success-alert').fadeOut(1000); }, 2000);</script>";
             } else {
                 echo "<div id='error-alert' class='alert alert-danger'>Error updating product!</div>";
@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         } else {
             if ($product->create($product_name, $description, $price, $stock, $status, $main_image_url, $collection_image_url, $category_id)) {
-                echo "<div id='success-alert' class='container mt-4 alert alert-success'>New product added successfully!</div>";
+                echo "<div id='success-alert' style='margin:0 auto;width:80%;z-index: 1000;' class='container mt-4 alert alert-success'>New product added successfully!</div>";
                 echo "<script>setTimeout(function(){ $('#success-alert').fadeOut(1000); }, 2000);</script>";
             } else {
                 echo "<div id='error-alert' class='alert alert-danger'>Error adding product!</div>";
@@ -86,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
     } else {
-        echo "<div class='alert alert-warning'>Product name cannot be empty.</div>";
+        echo "<div style='z-index: 1000;' class='alert alert-warning'>Product name cannot be empty.</div>";
     }
 }
 ?>
