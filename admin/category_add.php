@@ -1,31 +1,25 @@
 <?php
     require_once 'include/categoryConf.php';
     $categories = new Category();
-
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    
     $category_name = trim($_POST['category_name']);
     $category_status = (int) $_POST['category_status'];
-
-    
     if (isset($_FILES['category_image']) && $_FILES['category_image']['error'] == 0) {
-        
         $image_dir = 'images/categories/';
-        
         $image_name = basename($_FILES['category_image']['name']);
         $image_tmp_name = $_FILES['category_image']['tmp_name'];
         $image_type = pathinfo($image_name, PATHINFO_EXTENSION);
         $allowed_types = ['jpg', 'jpeg', 'png'];
-
-        
         if (in_array(strtolower($image_type), $allowed_types)) {
-            
             $unique_image_name = uniqid() . '.' . $image_type;
-            
-            
             $image_path = $image_dir . $unique_image_name;
-            
-            
+            if (isset($_POST['existing_image']) && !empty($_POST['existing_image'])) {
+                $old_image_path = $_POST['existing_image'];
+
+                if (file_exists($old_image_path)) {
+                    unlink($old_image_path); 
+                }
+            }
             if (move_uploaded_file($image_tmp_name, $image_path)) {
                 $category_image = $image_path; 
             } else {

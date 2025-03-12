@@ -12,7 +12,7 @@ $settings = $setting->getSettings();
                     <div class="footer__about">
                         <div class="footer__about__logo">
                             <?php if (isset($settings['logo']) && !empty($settings['logo'])): ?>
-                                <a href="./index.php?p=home"><img src="admin/<?php echo  htmlspecialchars($settings['logo']); ?>" style="height:80px; width:80px; object-fit:cover; display: flex;justify-content: center;align-items: center;" alt=""></a>
+                                <a href="./index.php?p=home"><img src="admin/<?php echo  htmlspecialchars($settings['logo']); ?>" style="margin-top:-20px;height:100px; width:100px; object-fit:cover; display: flex;justify-content: center;align-items: center;" alt=""></a>
                             <?php else: ?>
                                 <a href="./index.php?p=home"><img src="img/logo.png" alt=""></a>
                             <?php endif; ?>

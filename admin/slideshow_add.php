@@ -1,59 +1,73 @@
-
-
 <?php
-    require_once 'include/slideshowConf.php';
-    $slideshows = new Slideshow();
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $title = $_POST['title'];
-        $image = $_FILES['image']['name'];
-        $category_id = intval($_POST['category_id']);
-        $caption = $_POST['caption'];
-        $description = $_POST['description'];
-        $link = $_POST['link'];
-        $status = $_POST['status'];
-        $image_path = null;
+require_once 'include/slideshowConf.php';
+$slideshows = new Slideshow();
 
-        if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-            $image_dir = "images/slideshows/";
-            $image_name = basename($_FILES['image']['name']);
-            $image_tmp_name = $_FILES['image']['tmp_name'];
-            $image_type = pathinfo($image_name, PATHINFO_EXTENSION);
-            $allowed_types = ['jpg', 'jpeg', 'png'];
-            if (in_array(strtolower($image_type), $allowed_types)) {
-                $unique_image_name = uniqid() . '.' . $image_type;
-                $image_path = $image_dir . $unique_image_name;
-                if (!move_uploaded_file($image_tmp_name, $image_path)) {
-                    echo "<div class='alert alert-danger'>Error uploading image.</div>";
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $title = $_POST['title'];
+    $image = $_FILES['image']['name'];
+    $category_id = intval($_POST['category_id']);
+    $caption = $_POST['caption'];
+    $description = $_POST['description'];
+    $link = $_POST['link'];
+    $status = $_POST['status'];
+    $image_path = null;
+
+    // Check if a new image is uploaded
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $image_dir = "images/slideshows/";
+        $image_name = basename($_FILES['image']['name']);
+        $image_tmp_name = $_FILES['image']['tmp_name'];
+        $image_type = pathinfo($image_name, PATHINFO_EXTENSION);
+        $allowed_types = ['jpg', 'jpeg', 'png'];
+
+        if (in_array(strtolower($image_type), $allowed_types)) {
+            // Generate a unique name for the new image
+            $unique_image_name = uniqid() . '.' . $image_type;
+            $image_path = $image_dir . $unique_image_name;
+
+            // Move the new image to the folder
+            if (!move_uploaded_file($image_tmp_name, $image_path)) {
+                echo "<div class='alert alert-danger'>Error uploading image.</div>";
+            }
+
+            // Delete the old image if it exists
+            if (isset($_POST['existing_image']) && !empty($_POST['existing_image'])) {
+                $old_image = $_POST['existing_image'];
+                if (file_exists($old_image)) {
+                    unlink($old_image);  // Delete the old image from the folder
                 }
-            } else {
-                echo "<div class='alert alert-warning'>Only JPG, JPEG, and PNG files are allowed for the image.</div>";
             }
         } else {
-            $image_path = $_POST['existing_image'] ?? null;
+            echo "<div class='alert alert-warning'>Only JPG, JPEG, and PNG files are allowed for the image.</div>";
         }
-
-        if (!empty($title)) {
-            if (isset($_POST['slideshow_id']) && $_POST['slideshow_id'] != '') {
-                $slideshow_id = $_POST['slideshow_id'];
-                $stmt = $slideshows->update($title, $image_path, $caption, $description, $link, $status, $category_id, $slideshow_id);
-                $action_message = "Updated successfully!";
-            } else {
-                $stmt = $slideshows->create($title, $image_path, $caption, $description, $link, $status, $category_id);
-                $action_message = "New slideshow added successfully!";
-            }
-
-            if ($stmt->execute()) {
-                echo "<div id='success-alert' style='width:80%;' class='container alert alert-success mt-4 mb-4'>$action_message</div>";
-                echo "<script>setTimeout(function(){ $('#success-alert').fadeOut(1000); }, 2000);</script>";
-            } else {
-                echo "<div id='error-alert' class='alert alert-danger'>Error: " . $stmt->error . "</div>";
-                echo "<script>setTimeout(function(){ $('#error-alert').fadeOut(1000); }, 2000);</script>";
-            }
-        } else {
-            echo "<div class='alert alert-warning'>Title cannot be empty.</div>";
-        }
+    } else {
+        // If no new image is uploaded, keep the existing image
+        $image_path = $_POST['existing_image'] ?? null;
     }
+
+    if (!empty($title)) {
+        if (isset($_POST['slideshow_id']) && $_POST['slideshow_id'] != '') {
+            $slideshow_id = $_POST['slideshow_id'];
+            $stmt = $slideshows->update($title, $image_path, $caption, $description, $link, $status, $category_id, $slideshow_id);
+            $action_message = "Updated successfully!";
+        } else {
+            $stmt = $slideshows->create($title, $image_path, $caption, $description, $link, $status, $category_id);
+            $action_message = "New slideshow added successfully!";
+        }
+
+        if ($stmt->execute()) {
+            echo "<div id='success-alert' style='width:80%;' class='container alert alert-success mt-4 mb-4'>$action_message</div>";
+            echo "<script>setTimeout(function(){ $('#success-alert').fadeOut(1000); }, 2000);</script>";
+        } else {
+            echo "<div id='error-alert' class='alert alert-danger'>Error: " . $stmt->error . "</div>";
+            echo "<script>setTimeout(function(){ $('#error-alert').fadeOut(1000); }, 2000);</script>";
+        }
+    } else {
+        echo "<div class='alert alert-warning'>Title cannot be empty.</div>";
+    }
+}
 ?>
+
 <?php
 $slideshow = null;
 if (isset($_GET['id'])) {
@@ -101,7 +115,7 @@ if (isset($_GET['id'])) {
                     $category = new Category();
                     $categorys = $category->read();
                     foreach ($categorys as $row) {
-                        $selected = (isset($product_datas['category_id']) && $product_datas['category_id'] == $row['id']) ? 'selected' : '';
+                        $selected = (isset($slideshow['category_id']) && $slideshow['category_id'] == $row['id']) ? 'selected' : '';
                         echo "<option value='" . $row['id'] . "' $selected>" . htmlspecialchars($row['category_name']) . "</option>";
                     }
                     ?>
@@ -126,9 +140,6 @@ if (isset($_GET['id'])) {
                     <option value="0" <?php echo isset($slideshow) && $slideshow['status'] == 0 ? 'selected' : ''; ?>>Inactive</option>
                 </select>
             </div>
-            <?php if (isset($slideshow)): ?>
-                <input type="hidden" name="id" value="<?php echo $slideshow['id']; ?>">
-            <?php endif; ?>
             <button type="submit" class="btn btn-primary"><?php echo isset($slideshow) ? 'Save Changes' : 'Save Slide'; ?></button>
         </form>
     </div>

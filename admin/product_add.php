@@ -15,8 +15,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
+
+    // Handle Main Image
     $main_image_url = "";
     if (!empty($_FILES['product_image']['name']) && $_FILES['product_image']['error'] == 0) {
+        // Delete old image if a new one is uploaded
+        if (!empty($_POST['existing_main_image'])) {
+            $old_image = $_POST['existing_main_image'];
+            if (file_exists($old_image)) {
+                unlink($old_image); // Delete old image
+            }
+        }
+
         $file_ext = pathinfo($_FILES["product_image"]["name"], PATHINFO_EXTENSION);
         $main_image_url = $upload_dir . uniqid() . "." . $file_ext;
         if (!move_uploaded_file($_FILES["product_image"]["tmp_name"], $main_image_url)) {
@@ -25,8 +35,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $main_image_url = $_POST['existing_main_image'] ?? null;
     }
+
+    // Handle Collection Images
     $collection_images = [];
     if (!empty($_FILES['collection_images']['name'][0])) {
+        // Delete old collection images if new ones are uploaded
+        if (!empty($_POST['existing_collection_image'])) {
+            $existing_images = json_decode($_POST['existing_collection_image'], true);
+            foreach ($existing_images as $image) {
+                if (file_exists($image)) {
+                    unlink($image); // Delete old image
+                }
+            }
+        }
+
         foreach ($_FILES['collection_images']['tmp_name'] as $key => $tmp_name) {
             if ($_FILES['collection_images']['size'][$key] <= 200097152) { // 20MB limit
                 $file_ext = pathinfo($_FILES['collection_images']['name'][$key], PATHINFO_EXTENSION);
@@ -41,12 +63,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $collection_images = !empty($_POST['existing_collection_image']) ? json_decode($_POST['existing_collection_image'], true) : [];
     }
-    
+
     $collection_image_url = json_encode($collection_images);
-    
+
     if (!empty($product_name)) {
         if (isset($_POST['product_id']) && $_POST['product_id'] != '') {
-            
             $product_id = $_POST['product_id'];
             if ($product->update($product_name, $description, $price, $stock, $status, $main_image_url, $collection_image_url, $category_id, $product_id)) {
                 echo "<div id='success-alert' class='container mt-4 alert alert-success'>Product updated successfully!</div>";
@@ -56,7 +77,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "<script>setTimeout(function(){ $('#error-alert').fadeOut(1000); }, 2000);</script>";
             }
         } else {
-            
             if ($product->create($product_name, $description, $price, $stock, $status, $main_image_url, $collection_image_url, $category_id)) {
                 echo "<div id='success-alert' class='container mt-4 alert alert-success'>New product added successfully!</div>";
                 echo "<script>setTimeout(function(){ $('#success-alert').fadeOut(1000); }, 2000);</script>";
@@ -169,6 +189,7 @@ if (isset($_GET['id'])) {
         </form>
     </div>
 </div>
+
 
 <script>
     function previewMainImage(event) {

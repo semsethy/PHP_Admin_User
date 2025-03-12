@@ -1,47 +1,15 @@
-
 <?php
 require_once 'include/settingConf.php';
 $setting = new Setting();
-
 $settings = $setting->getSettings();
 ?>
-
-<style>
-.sidebar-sub {
-  display: none;
-  padding-left: 20px;
-}
-.sidebar-sub.show {
-  display: block;
-}
-.sidebar-left {
-  display: flex;
-  align-items: center;
-  gap: 14px; 
-}
-.sidebar-toggle {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.toggle-icon {
-  transition: transform 0.3s ease;
-}
-.sidebar-item.active .toggle-icon i {
-  transform: rotate(180deg);
-}
-.logo-img img{
-  height:100px;
-  margin-top:20px;
-}
-</style>
 
 <aside class="left-sidebar">
       <!-- Sidebar scroll-->
       <div>
-        <div class="brand-logo d-flex align-items-center justify-content-between">
+        <div class="brand-logo d-flex align-items-center justify-content-center">
           <a href="./index.php" class="text-nowrap logo-img">
-            <img src="<?php echo  htmlspecialchars($settings['logo']); ?>" alt="" />
+            <img src="<?php echo  htmlspecialchars($settings['logo']); ?>" style="height:100px;margin-top:20px;" alt="" />
           </a>
           <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
             <i class="ti ti-x fs-8"></i>
@@ -185,39 +153,3 @@ $settings = $setting->getSettings();
         </nav>
       </div>
     </aside>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const sidebarToggles = document.querySelectorAll(".sidebar-toggle");
-
-    sidebarToggles.forEach(toggle => {
-      toggle.addEventListener("click", function (event) {
-        event.preventDefault();
-
-        const parentItem = this.closest(".sidebar-item");
-        const submenu = parentItem.querySelector(".sidebar-sub");
-        const icon = parentItem.querySelector(".toggle-icon i");
-
-        if (submenu) {
-          submenu.classList.toggle("show");
-          parentItem.classList.toggle("active");
-
-          // Close other submenus
-          document.querySelectorAll(".sidebar-item").forEach(item => {
-            if (item !== parentItem) {
-              item.classList.remove("active");
-              const sub = item.querySelector(".sidebar-sub");
-              if (sub) sub.classList.remove("show");
-              const otherIcon = item.querySelector(".toggle-icon i");
-              if (otherIcon) otherIcon.style.transform = "rotate(0deg)";
-            }
-          });
-
-          // Rotate icon
-          icon.style.transform = submenu.classList.contains("show") ? "rotate(180deg)" : "rotate(0deg)";
-        }
-      });
-    });
-  });
-
-</script>

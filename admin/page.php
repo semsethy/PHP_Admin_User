@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     unlink($existing_logo);  // Delete the old logo file
                 }
             }
-
+            
             // Move the uploaded file to the server directory
             if (move_uploaded_file($image_tmp_name, $image_path)) {
                 $logo = $image_path;
@@ -112,11 +112,11 @@ $settings = $setting->getSettings(); // Assuming getSettings fetches the current
             </div>
             <div class="mb-3">
                 <label for="icon" class="form-label">Icon</label>
-                <input type="file" class="form-control" id="icon" name="icon" accept="image/*" onchange="previewImage(event)">
+                <input type="file" class="form-control" id="icon" name="icon" accept="image/*" onchange="previewIconImage(event)">
                 
                 <?php if (isset($settings)): ?>
                     <div class="mt-2">Current Icon: </div>
-                    <div id="image_preview">
+                    <div id="image_icon_preview">
                         <?php if (isset($settings['icon']) && !empty($settings['icon'])): ?>
                             <img class="current-image" src="<?php echo htmlspecialchars($settings['icon']); ?>" alt="Current Logo Image" style="margin-top:20px; margin-left:20px; width: 80px; height: 80px; object-fit: cover; border-radius: 5px; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3); border: 1px solid lightgray;">
                         <?php else: ?>
@@ -133,11 +133,11 @@ $settings = $setting->getSettings(); // Assuming getSettings fetches the current
 
             <div class="mb-3">
                 <label for="logo" class="form-label">Logo</label>
-                <input type="file" class="form-control" id="logo" name="logo" accept="image/*" onchange="previewImage(event)">
+                <input type="file" class="form-control" id="logo" name="logo" accept="image/*" onchange="previewLogoImage(event)">
                 
                 <?php if (isset($settings)): ?>
                     <div class="mt-2">Current Logo: </div>
-                    <div id="image_preview">
+                    <div id="image_logo_preview">
                         <?php if (isset($settings['logo']) && !empty($settings['logo'])): ?>
                             <img class="current-image" src="<?php echo htmlspecialchars($settings['logo']); ?>" alt="Current Logo Image" style="margin-top:20px; margin-left:20px; width: 80px; height: 80px; object-fit: cover; border-radius: 5px; box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3); border: 1px solid lightgray;">
                         <?php else: ?>
@@ -187,10 +187,18 @@ $settings = $setting->getSettings(); // Assuming getSettings fetches the current
 
 <script>
     // Image preview function
-    function previewImage(event) {
+    function previewLogoImage(event) {
         var reader = new FileReader();
         reader.onload = function() {
-            var output = document.getElementById('image_preview');
+            var output = document.getElementById('image_logo_preview');
+            output.innerHTML = '<img src="' + reader.result + '" alt="Selected Image" style="margin-top:20px; margin-left:20px; width: 80px; height: 80px; object-fit: cover; border-radius: 5px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);">';
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    }
+    function previewIconImage(event) {
+        var reader = new FileReader();
+        reader.onload = function() {
+            var output = document.getElementById('image_icon_preview');
             output.innerHTML = '<img src="' + reader.result + '" alt="Selected Image" style="margin-top:20px; margin-left:20px; width: 80px; height: 80px; object-fit: cover; border-radius: 5px; box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);">';
         };
         reader.readAsDataURL(event.target.files[0]);
