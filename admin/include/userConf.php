@@ -7,16 +7,14 @@ class User {
         $this->conn = (new Database())->getConnection();
     }
 
-    // Check if user exists by email
     public function getUsersByEmail($email) {
         $query = "SELECT * FROM `users` WHERE email = :email";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(':email', $email);
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // returns an array of users with the given email
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Register a new user
     public function registerUser($username, $email, $password) {
         $query = "INSERT INTO `users` (username, email, password, created_at) 
                     VALUES (:username, :email, :password, NOW())";
@@ -27,7 +25,6 @@ class User {
         return $stmt->execute();
     }
 
-    // Update last login time
     public function updateLastLogin($userId) {
         $query = "UPDATE `users` SET last_login_at = NOW() WHERE id = :id";
         $stmt = $this->conn->prepare($query);
@@ -35,7 +32,6 @@ class User {
         return $stmt->execute();
     }
 
-    // Fetch total number of users
     public function getTotalUsers() {
         $query = "SELECT COUNT(*) FROM `users`";
         $stmt = $this->conn->prepare($query);
@@ -43,7 +39,6 @@ class User {
         return $stmt->fetchColumn();
     }
 
-    // Fetch users for pagination
     public function getUsers($start_from, $results_per_page) {
         $query = "SELECT 
                       id, 
@@ -61,7 +56,6 @@ class User {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Delete user by ID
     public function deleteUser($id) {
         $query = "DELETE FROM `users` WHERE `id` = :id";
         $stmt = $this->conn->prepare($query);

@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     
     $collection_image_url = json_encode($collection_images);
-
+    
     if (!empty($product_name)) {
         if (isset($_POST['product_id']) && $_POST['product_id'] != '') {
             

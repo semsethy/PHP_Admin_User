@@ -76,47 +76,6 @@ class Product {
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    public function getProductsByCategory1($category_id, $min_price, $max_price, $color, $size) {
-        $query = "SELECT * FROM products WHERE category_id = :category_id AND price BETWEEN :min_price AND :max_price";
-        if ($color) {
-            $query .= " AND color = :color";
-        }
-        if ($size) {
-            $query .= " AND size = :size";
-        }
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':category_id', $category_id);
-        $stmt->bindParam(':min_price', $min_price);
-        $stmt->bindParam(':max_price', $max_price);
-        if ($color) {
-            $stmt->bindParam(':color', $color);
-        }
-        if ($size) {
-            $stmt->bindParam(':size', $size);
-        }
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-    public function getProductsByFilters($min_price, $max_price, $color, $size) {
-        $query = "SELECT * FROM products WHERE price BETWEEN :min_price AND :max_price";
-        if ($color) {
-            $query .= " AND color = :color";
-        }
-        if ($size) {
-            $query .= " AND size = :size";
-        }
-        $stmt = $this->db->prepare($query);
-        $stmt->bindParam(':min_price', $min_price);
-        $stmt->bindParam(':max_price', $max_price);
-        if ($color) {
-            $stmt->bindParam(':color', $color);
-        }
-        if ($size) {
-            $stmt->bindParam(':size', $size);
-        }
-        $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
     public function getAll($offset, $limit) {
         $query = "SELECT products.*, categories.category_name
                   FROM products
@@ -154,11 +113,34 @@ class Product {
         return $row['total'];
     }
     public function delete($id) {
+        $query = "SELECT main_image_url, collection_image_url FROM products WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+        $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($product && !empty($product['main_image_url']) && file_exists($product['main_image_url'])) {
+            unlink($product['main_image_url']);  
+        }
+    
+        if ($product && !empty($product['collection_image_url'])) {
+            $collection_images = json_decode($product['collection_image_url'], true);
+    
+            if (is_array($collection_images)) {
+                foreach ($collection_images as $image) {
+                    if (file_exists($image)) {
+                        unlink($image);  
+                    }
+                }
+            }
+        }
+    
         $query = "DELETE FROM products WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
-        return $stmt->execute();
+        return $stmt->execute(); 
     }
+    
 }
 ?>
 

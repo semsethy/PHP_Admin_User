@@ -8,7 +8,6 @@ class Category {
         $this->conn = (new Database())->getConnection();
     }
 
-    // Create a new product
     public function create($category_name, $category_status, $category_image) {
         $query = "INSERT INTO categories (category_name, status, category_image) 
                   VALUES (:category_name, :category_status, :category_image)";
@@ -43,7 +42,6 @@ class Category {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Read products from the database with pagination
     public function getAll($offset, $limit) {
         $query = "SELECT *
                   FROM categories
@@ -55,14 +53,12 @@ class Category {
         $stmt->bindParam(":offset", $offset, PDO::PARAM_INT);
         $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
         $stmt->execute();
-
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getCategories() {
         $query = "SELECT * FROM categories WHERE status = 1"; 
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-        
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function getCategoriesByID($category_id) {
@@ -76,20 +72,26 @@ class Category {
         $query = "SELECT *
                   FROM categories WHERE status = 1
                   ORDER BY id ASC";
-
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
-
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Delete a product by ID
     public function delete($id) {
+        $query = "SELECT category_image FROM categories WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+        $category = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($category && !empty($category['category_image']) && file_exists($category['category_image'])) {
+            unlink($category['category_image']);  
+        }
         $query = "DELETE FROM categories WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
-        return $stmt->execute();
+        return $stmt->execute();  
     }
+    
 }
 ?>
 

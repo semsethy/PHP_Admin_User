@@ -2,10 +2,13 @@
 <?php
 require_once 'admin/include/categoryConf.php';
 require_once 'admin/include/slideshowConf.php';
+require_once 'admin/include/settingConf.php';
+$setting = new Setting();
 $category = new Category();
 $slideshow = new Slideshow();
 $categories = $category->getCategories();
 $slideshows = $slideshow->read();
+$settings = $setting->getSettings();
 ?>
 <section class="hero">
     <div class="container">
@@ -36,7 +39,7 @@ $slideshows = $slideshow->read();
                             <i class="fa fa-phone"></i>
                         </div>
                         <div class="hero__search__phone__text">
-                            <h5>+855 10 383 493</h5>
+                            <h5><?php echo  htmlspecialchars($settings['phone_number']); ?></h5>
                             <span>support 24/7 time</span>
                         </div>
                     </div>

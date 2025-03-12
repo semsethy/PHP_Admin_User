@@ -1,15 +1,14 @@
 <?php
-// Database connection
+require_once 'admin/include/settingConf.php';
 require_once 'admin/include/shopping_cartConf.php';
+$setting = new Setting();
 $shopping = new ShoppingCart();
 $total_quantity = 0;
 $total = 0;
-// Check if user is logged in
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id']; 
     $result = $shopping->getShoppingCart($user_id);
     
-    // Start output buffering to capture the HTML
     ob_start();
     while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
         $product_id = $row['product_id'];
@@ -42,14 +41,13 @@ if (isset($_SESSION['user_id'])) {
         <?php
     }
     
-    // Capture the output and store in a variable
     $cart_html = ob_get_clean();
 } else {
     $total_price = 0;
     $cart_html = "<tr><td colspan='4'>Your cart is empty</td></tr>";
 }
 
-
+$settings = $setting->getSettings();
 ?>
 
 <header class="header">
@@ -59,7 +57,7 @@ if (isset($_SESSION['user_id'])) {
                 <div class="col-lg-6 col-md-6">
                     <div class="header__top__left">
                         <ul>
-                            <li><i class="fa fa-envelope"></i> sethyrisk@gmail.com</li>
+                            <li><i class="fa fa-envelope"></i> <?php echo  htmlspecialchars($settings['email']); ?></li>
                             <li>Free Shipping for all Order of $99</li>
                         </ul>
                     </div>
@@ -67,10 +65,9 @@ if (isset($_SESSION['user_id'])) {
                 <div class="col-lg-6 col-md-6">
                     <div class="header__top__right">
                         <div class="header__top__right__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-linkedin"></i></a>
-                            <a href="#"><i class="fa fa-pinterest-p"></i></a>
+                            <a href="<?php echo  htmlspecialchars($settings['facebook_link']); ?>"><i class="fa fa-facebook"></i></a>
+                            <a href="<?php echo  htmlspecialchars($settings['twitter_link']); ?>"><i class="fa fa-twitter"></i></a>
+                            <a href="<?php echo  htmlspecialchars($settings['instagram_link']); ?>"><i class="fa fa-instagram"></i></a>
                         </div>
                         <div class="header__top__right__language">
                             <img src="img/language.png" alt="">
@@ -98,7 +95,11 @@ if (isset($_SESSION['user_id'])) {
         <div class="row">
             <div class="col-lg-3">
                 <div class="header__logo">
-                    <a href="./index.php?p=home"><img src="img/logo.png" alt=""></a>
+                    <?php if (isset($settings['logo']) && !empty($settings['logo'])): ?>
+                        <a href="./index.php?p=home"><img src="admin/<?php echo  htmlspecialchars($settings['logo']); ?>" style="height:80px; width:80px; object-fit:cover; display: flex;justify-content: center;align-items: center;" alt=""></a>
+                    <?php else: ?>
+                        <a href="./index.php?p=home"><img src="img/logo.png" alt=""></a>
+                    <?php endif; ?>
                 </div>
             </div>
             <div class="col-lg-6">

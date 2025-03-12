@@ -1,3 +1,5 @@
+
+
 <?php
     require_once 'include/slideshowConf.php';
     $slideshows = new Slideshow();
@@ -64,7 +66,7 @@ if (isset($_GET['id'])) {
 ?>
 
 <div class="container-fluid">
-    <div class="card p-3">
+    <div class="card p-3 mt-5">
         <form action="" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="slideshow_id" value="<?php echo isset($slideshow['id']) ? $slideshow['id'] : ''; ?>" />
             <div class="mb-3">

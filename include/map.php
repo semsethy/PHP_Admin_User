@@ -6,7 +6,7 @@
             <div class="inside-widget">
                 <h4>Royal University of Phnom Penh</h4>
                 <ul>
-                    <li>Phone: +855 99541626</li>
+                    <li>Phone: <?php echo  htmlspecialchars($settings['phone_number']); ?></li>
                     <li>Add: 7 Meakara Bridge</li>
                 </ul>
             </div>

@@ -40,7 +40,7 @@ class Slideshow{
     }
     public function create($title, $image_path, $caption, $description, $link, $status, $category_id) {
         $query = "INSERT INTO slideshow (title, image, caption, description, link, status, category_id)
-                  VALUES (:title, :image, :caption, :description, :link, , :status, :category_id)";
+                  VALUES (:title, :image, :caption, :description, :link , :status, :category_id)";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":title", $title);
         $stmt->bindParam(":image", $image_path);
@@ -75,10 +75,20 @@ class Slideshow{
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     public function delete($id) {
+        $query = "SELECT image FROM slideshow WHERE id = :id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(":id", $id);
+        $stmt->execute();
+        $slideshow = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($slideshow && !empty($slideshow['image']) && file_exists($slideshow['image'])) {
+            unlink($slideshow['image']);  
+        }
+    
         $query = "DELETE FROM slideshow WHERE id = :id";
         $stmt = $this->conn->prepare($query);
         $stmt->bindParam(":id", $id);
-        return $stmt->execute();
+        return $stmt->execute();  
     }
 }
 ?>

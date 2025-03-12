@@ -1,10 +1,17 @@
+<?php
+require_once 'admin/include/settingConf.php';
+$setting = new Setting();
+$settings = $setting->getSettings();
+?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="description" content="Ogani Template">
     <meta name="keywords" content="Ogani, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Fresh Shop</title>
+    <link rel="shortcut icon" type="image/png" href="admin/<?php echo  htmlspecialchars($settings['icon']); ?>" />
+    <title><?php echo  htmlspecialchars($settings['title']); ?></title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">

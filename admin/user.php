@@ -19,9 +19,9 @@
 
 <div class="container-fluid">
     <h1>User List</h1>
-    <div class="mb-4" style="text-align: right;">
+    <!-- <div class="mb-4" style="text-align: right;">
         <a href="index.php?p=category_add" style="background-color: #28a745; color: white; border-radius: 4px; padding: 8px 12px; border: none; cursor: pointer;">Add user</a>
-    </div>
+    </div> -->
     <div class="table-container">
         <div class="card p-3">
             <div class="table-responsive text-nowrap">
@@ -31,8 +31,8 @@
                             <th><strong>ID</strong></th>
                             <th><strong>Username</strong></th>
                             <th><strong>Identifier</strong></th>
-                            <th><strong>Created</strong></th>
-                            <th><strong>Signed in</strong></th>
+                            <th><strong>Created At</strong></th>
+                            <th><strong>Signed In</strong></th>
                             <th><strong>Action</strong></th>
                         </tr>
                     </thead>

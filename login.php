@@ -1,21 +1,17 @@
-<!-- login.php -->
-<?php
-// session_start();
-require_once 'admin/include/userConf.php';
 
-// Create instance of the User class
+<?php
+require_once 'admin/include/userConf.php';
+require_once 'admin/include/settingConf.php';
+$setting = new Setting();
 $userClass = new User();
 
-// Handle login
 if (isset($_POST['login'])) {
     $email = $_POST['email'];
     $pass = $_POST['password'];
-
-    // Fetch user from the database using User class method
     $select = $userClass->getUsersByEmail($email);
 
     if (!empty($select)) {
-        $row = $select[0]; // Assuming the first result is the user
+        $row = $select[0]; 
         if (password_verify($pass, $row['password'])) {
             // Regenerate session ID to prevent session fixation attacks
             session_regenerate_id(true);
@@ -23,36 +19,32 @@ if (isset($_POST['login'])) {
             $userClass->updateLastLogin($row['id']);
             $_SESSION['user_id'] = $row['id'];
 
-            // Ensure the redirect URL is safe
-            $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?p=home'; // Default to home if not set
-            unset($_SESSION['redirect_url']); // Remove redirect URL after use
+            $redirectUrl = $_SESSION['redirect_url'] ?? 'index.php?p=home'; 
+            unset($_SESSION['redirect_url']); 
 
-            // Check if the redirect URL is valid
             if (filter_var($redirectUrl, FILTER_VALIDATE_URL) && strpos($redirectUrl, $_SERVER['HTTP_HOST']) === false) {
-                $redirectUrl = 'index.php?p=home'; // Fallback to a safe page
+                $redirectUrl = 'index.php?p=home';
             }
 
             header('Location: ' . $redirectUrl);
             exit();
         } else {
             $message[] = 'Incorrect password!';
-            $shake = true; // Trigger shake effect
+            $shake = true; 
         }
     } else {
         $message[] = 'User not found!';
-        $shake = false; // No shake needed
+        $shake = false; 
     }
 }
 
-// Capture the page URL where the user was trying to go (e.g., add to cart page)
 if (isset($_GET['redirect_to'])) {
     $_SESSION['redirect_url'] = $_GET['redirect_to'];
 }
+$settings = $setting->getSettings();
 ?>
 
-
 <?php include "include/userstyle.php" ?>
-<!-- Body Wrapper -->
 <div class="page-wrapper" id="main-wrapper" data-layout="vertical" data-navbarbg="skin6" data-sidebartype="full" data-sidebar-position="fixed" data-header-position="fixed">
     <div class="position-relative overflow-hidden radial-gradient min-vh-100 d-flex align-items-center justify-content-center">
         <div class="d-flex align-items-center justify-content-center w-100">
@@ -61,18 +53,16 @@ if (isset($_GET['redirect_to'])) {
                     <div class="card mb-0">
                         <div class="card-body">
                             <a href="index.php?p=home" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                                <img src="admin/images/logos/dark-logo.svg" width="180" alt="">
+                                <img src="admin/<?php echo  htmlspecialchars($settings['logo']); ?>" height="100" alt="">
                             </a>
                             <p class="text-center">Your Social Campaigns</p>
 
-                            <!-- Display message if there is an error -->
                             <?php if (isset($message)): ?>
                                 <div class="alert alert-danger">
                                     <?php echo implode('<br>', $message); ?>
                                 </div>
                             <?php endif; ?>
 
-                            <!-- Login Form -->
                             <form method="POST" action="">
                                 <div class="mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Email Address</label>

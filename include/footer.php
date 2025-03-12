@@ -1,15 +1,26 @@
+<?php
+require_once 'admin/include/settingConf.php';
+$setting = new Setting();
+$settings = $setting->getSettings();
+
+?>
+
 <footer class="footer spad">
         <div class="container">
             <div class="row">
                 <div class="col-lg-3 col-md-6 col-sm-6">
                     <div class="footer__about">
                         <div class="footer__about__logo">
-                            <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                            <?php if (isset($settings['logo']) && !empty($settings['logo'])): ?>
+                                <a href="./index.php?p=home"><img src="admin/<?php echo  htmlspecialchars($settings['logo']); ?>" style="height:80px; width:80px; object-fit:cover; display: flex;justify-content: center;align-items: center;" alt=""></a>
+                            <?php else: ?>
+                                <a href="./index.php?p=home"><img src="img/logo.png" alt=""></a>
+                            <?php endif; ?>
                         </div>
                         <ul>
                             <li>Address: Phnom Penh Thmey, Sen Sok, Phnom Penh</li>
-                            <li>Phone: +855 10 383 493</li>
-                            <li>Email: sethyrisk@gmail.com</li>
+                            <li>Phone: <?php echo  htmlspecialchars($settings['phone_number']); ?></li>
+                            <li>Email: <?php echo  htmlspecialchars($settings['email']); ?></li>
                         </ul>
                     </div>
                 </div>
@@ -43,10 +54,9 @@
                             <button type="submit" class="site-btn">Subscribe</button>
                         </form>
                         <div class="footer__widget__social">
-                            <a href="#"><i class="fa fa-facebook"></i></a>
-                            <a href="#"><i class="fa fa-instagram"></i></a>
-                            <a href="#"><i class="fa fa-twitter"></i></a>
-                            <a href="#"><i class="fa fa-pinterest"></i></a>
+                            <a href="<?php echo  htmlspecialchars($settings['facebook_link']); ?>"><i class="fa fa-facebook"></i></a>
+                            <a href="<?php echo  htmlspecialchars($settings['instagram_link']); ?>"><i class="fa fa-instagram"></i></a>
+                            <a href="<?php echo  htmlspecialchars($settings['twitter_link']); ?>"><i class="fa fa-twitter"></i></a>
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,8 @@
 <?php
 session_start();
 require_once 'include/userConf.php';
-
+require_once 'include/settingConf.php';
+$setting = new Setting();
 $userClass = new User();
 
 if (isset($_POST['login'])) {
@@ -41,6 +42,7 @@ if (isset($_POST['login'])) {
 if (isset($_GET['redirect_to'])) {
     $_SESSION['redirect_url'] = $_GET['redirect_to'];
 }
+$settings = $setting->getSettings();
 ?>
 
 <!doctype html>
@@ -49,8 +51,8 @@ if (isset($_GET['redirect_to'])) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Admin</title>
-  <link rel="shortcut icon" type="image/png" href="images/logos/favicon.png" />
+  <title><?php echo  htmlspecialchars($settings['title']); ?></title>
+  <link rel="shortcut icon" type="image/png" href="<?php echo  htmlspecialchars($settings['icon']); ?>" />
   <link rel="stylesheet" href="css/styles.min.css" />
   <style>
     .shake {
@@ -88,7 +90,7 @@ if (isset($_GET['redirect_to'])) {
                     <div class="card mb-0">
                         <div class="card-body">
                             <a href="index.php?p=home" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                                <img src="images/logos/dark-logo.svg" width="180" alt="">
+                            <img src="<?php echo  htmlspecialchars($settings['logo']); ?>" height="100" alt="">
                             </a>
                             <p class="text-center">Your Social Campaigns</p>
                             <?php if (isset($message)): ?>

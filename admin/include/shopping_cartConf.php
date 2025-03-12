@@ -5,7 +5,6 @@ class ShoppingCart {
     public function __construct() {
         $this->conn = (new Database())->getConnection();
     }
-    // Get the shopping cart items for the user
     public function getShoppingCart($user_id) {
         $query = "
             SELECT sc.product_id, sc.quantity, p.product_name, p.price, p.main_image_url 
@@ -26,19 +25,18 @@ class ShoppingCart {
         $stmt->execute();
         return $stmt;
     }
-
-    // Update the quantity of an existing product in the cart
+    
     public function updateProductQuantity($new_quantity, $user_id, $product_id) {
         $updateQuery = "UPDATE shopping_cart SET quantity = :new_quantity WHERE user_id = :user_id AND product_id = :product_id";
-       $updateStmt = $this->conn->prepare($updateQuery);
+        $updateStmt = $this->conn->prepare($updateQuery);
         $updateStmt->bindParam(':new_quantity', $new_quantity, PDO::PARAM_INT);
         $updateStmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
         $updateStmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
-       $updateStmt->execute();
-       return $updateStmt;
+        $updateStmt->execute();
+        return $updateStmt;
     }
+    
 
-    // Insert a new product into the cart
     public function addProductToCart($user_id, $product_id, $quantity) {
         $insertQuery = "INSERT INTO shopping_cart (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)";
         $insertStmt = $this->conn->prepare($insertQuery);
@@ -48,5 +46,15 @@ class ShoppingCart {
         $insertStmt->execute();
         return $insertStmt;
     }
+    public function delete($user_id, $product_id) {
+        $query = "DELETE FROM shopping_cart WHERE user_id = :user_id AND product_id = :product_id";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':product_id', $product_id, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt;
+    }
+    
+
 }
 ?>

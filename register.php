@@ -1,7 +1,8 @@
 <?php
 // require_once 'Database.php';
 require_once 'admin/include/userConf.php';
-
+require_once 'admin/include/settingConf.php';
+$setting = new Setting();
 $userClass = new User();
 
 // Handle form submission
@@ -30,6 +31,7 @@ if (isset($_POST['submit'])) {
         }
     }
 }
+$settings = $setting->getSettings();
 ?>
 
 <?php include "include/userstyle.php" ?>
@@ -41,7 +43,7 @@ if (isset($_POST['submit'])) {
                     <div class="card mb-0">
                         <div class="card-body">
                             <a href="index.php?p=home" class="text-nowrap logo-img text-center d-block py-3 w-100">
-                                <img src="admin/images/logos/dark-logo.svg" width="180" alt="">
+                            <img src="admin/<?php echo  htmlspecialchars($settings['logo']); ?>" height="100" alt="">
                             </a>
                             <p class="text-center">Your Social Campaigns</p>
                             <!-- Form to register a user -->
